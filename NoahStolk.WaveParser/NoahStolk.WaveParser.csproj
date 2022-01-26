@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Build configuration">
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>SA1633</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package information">
+    <Authors>Noah Stolk</Authors>
+    <Copyright>Copyright © Noah Stolk</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>NoahStolk.WaveParser</PackageId>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/NoahStolk/WaveParser</RepositoryUrl>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+</Project>
