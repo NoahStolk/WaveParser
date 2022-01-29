@@ -11,19 +11,10 @@ public class WaveData
 	private const int _fmtSize = 16;
 	private const int _audioFormat = 1;
 
-	public WaveData(string path)
-		: this(new FileStream(path, FileMode.Open))
-	{
-	}
-
 	public WaveData(byte[] contents)
-		: this(new MemoryStream(contents))
 	{
-	}
-
-	public WaveData(Stream stream)
-	{
-		BinaryReader br = new(stream);
+		using MemoryStream ms = new(contents);
+		using BinaryReader br = new(ms);
 		string riffHeader = Encoding.Default.GetString(br.ReadBytes(4));
 		if (riffHeader != _riffHeader)
 			throw new WaveParseException($"Expected '{_riffHeader}' header (got '{riffHeader}').");
@@ -59,22 +50,21 @@ public class WaveData
 		if (BlockAlign != expectedBlockAlign)
 			throw new WaveParseException($"Expected block align to be {expectedBlockAlign} (got {BlockAlign}).");
 
-		long finalDataHeaderPosition = br.BaseStream.Length - (_dataHeader.Length + sizeof(int));
-		string dataHeader;
-		do
+		for (long i = br.BaseStream.Position; i < br.BaseStream.Length - (_dataHeader.Length + sizeof(int)); i += 4)
 		{
-			if (br.BaseStream.Position >= finalDataHeaderPosition)
-				throw new WaveParseException($"Could not find '{_dataHeader}' header.");
+			string dataHeader = Encoding.Default.GetString(br.ReadBytes(4));
+			if (dataHeader == _dataHeader)
+			{
+				DataSize = br.ReadInt32();
+				Data = br.ReadBytes(DataSize);
 
-			dataHeader = Encoding.Default.GetString(br.ReadBytes(4));
+				SampleCount = DataSize / (BitsPerSample / 8) / Channels;
+				LengthInSeconds = SampleCount / (double)SampleRate;
+				return;
+			}
 		}
-		while (dataHeader != _dataHeader);
 
-		DataSize = br.ReadInt32();
-		Data = br.ReadBytes(DataSize);
-
-		br.Dispose();
-		stream.Dispose();
+		throw new WaveParseException($"Could not find '{_dataHeader}' header.");
 	}
 
 	public short Channels { get; }
@@ -85,9 +75,6 @@ public class WaveData
 	public int DataSize { get; }
 	public byte[] Data { get; }
 
-	public double GetLength()
-	{
-		int sampleCount = DataSize / (BitsPerSample / 8) / Channels;
-		return sampleCount / (double)SampleRate;
-	}
+	public int SampleCount { get; }
+	public double LengthInSeconds { get; }
 }
