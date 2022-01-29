@@ -2,6 +2,9 @@ using System.Text;
 
 namespace NoahStolk.WaveParser;
 
+/// <summary>
+/// Reads wave data from a .wav file based on the <see href="http://soundfile.sapp.org/doc/WaveFormat/">wave format specification</see>.
+/// </summary>
 public class WaveData
 {
 	private const string _riffHeader = "RIFF";
@@ -11,9 +14,9 @@ public class WaveData
 	private const int _fmtSize = 16;
 	private const int _audioFormat = 1;
 
-	public WaveData(byte[] contents)
+	public WaveData(byte[] waveFileContents)
 	{
-		using MemoryStream ms = new(contents);
+		using MemoryStream ms = new(waveFileContents);
 		using BinaryReader br = new(ms);
 		string riffHeader = Encoding.Default.GetString(br.ReadBytes(4));
 		if (riffHeader != _riffHeader)
