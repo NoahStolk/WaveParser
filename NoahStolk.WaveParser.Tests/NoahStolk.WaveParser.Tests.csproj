@@ -9,11 +9,21 @@
     <NoWarn>SA1633</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup Label="Project under test">
+    <ProjectReference Include="..\NoahStolk.WaveParser\NoahStolk.WaveParser.csproj" />
+  </ItemGroup>
+
   <ItemGroup Label="Test dependencies">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Test resources">
+    <None Update="Resources\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

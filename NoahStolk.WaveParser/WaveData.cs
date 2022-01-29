@@ -11,7 +11,6 @@ public class WaveData
 	private const int _fmtSize = 16;
 	private const int _audioFormat = 1;
 
-	// TODO: Add unit tests.
 	public WaveData(string path)
 		: this(new FileStream(path, FileMode.Open))
 	{
@@ -71,8 +70,8 @@ public class WaveData
 		}
 		while (dataHeader != _dataHeader);
 
-		Size = br.ReadInt32();
-		Data = br.ReadBytes(Size);
+		DataSize = br.ReadInt32();
+		Data = br.ReadBytes(DataSize);
 
 		br.Dispose();
 		stream.Dispose();
@@ -83,12 +82,12 @@ public class WaveData
 	public int ByteRate { get; }
 	public short BlockAlign { get; }
 	public short BitsPerSample { get; }
-	public int Size { get; }
+	public int DataSize { get; }
 	public byte[] Data { get; }
 
 	public double GetLength()
 	{
-		int sampleCount = Size / (BitsPerSample / 8) / Channels;
+		int sampleCount = DataSize / (BitsPerSample / 8) / Channels;
 		return sampleCount / (double)SampleRate;
 	}
 }
