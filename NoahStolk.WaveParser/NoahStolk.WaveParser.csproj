@@ -14,7 +14,7 @@
     <PackageId>NoahStolk.WaveParser</PackageId>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/NoahStolk/WaveParser</RepositoryUrl>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>

@@ -11,7 +11,7 @@ public class WaveData
 	private const string _formatHeader = "WAVE";
 	private const string _fmtHeader = "fmt ";
 	private const string _dataHeader = "data";
-	private const int _fmtSize = 16;
+	private const int _fmtMinimumSize = 16;
 	private const int _audioFormat = 1;
 
 	public WaveData(byte[] waveFileContents)
@@ -33,8 +33,8 @@ public class WaveData
 			throw new WaveParseException($"Expected '{_fmtHeader}' header (got '{fmtHeader}').");
 
 		int fmtSize = br.ReadInt32();
-		if (fmtSize != _fmtSize)
-			throw new WaveParseException($"Expected FMT data chunk size to be {_fmtSize} (got {fmtSize}).");
+		if (fmtSize < _fmtMinimumSize)
+			throw new WaveParseException($"Expected FMT data chunk size to be at least {_fmtMinimumSize} (got {fmtSize}).");
 
 		short audioFormat = br.ReadInt16();
 		if (audioFormat != _audioFormat)
@@ -45,6 +45,8 @@ public class WaveData
 		ByteRate = br.ReadInt32();
 		BlockAlign = br.ReadInt16();
 		BitsPerSample = br.ReadInt16();
+
+		br.BaseStream.Seek(_fmtMinimumSize - fmtSize, SeekOrigin.Current);
 
 		int expectedByteRate = SampleRate * Channels * BitsPerSample / 8;
 		int expectedBlockAlign = Channels * BitsPerSample / 8;
